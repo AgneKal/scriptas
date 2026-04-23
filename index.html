@@ -61,43 +61,43 @@
       resultEl.innerHTML = `
         <table>
           <tr>
-            <td><span class="label">Request ID:</span></td>
+
             <td><span class="value">${result.requestId ?? 'N/A'}</span></td>
           </tr>
           <tr>
-            <td><span class="label">Visitor ID:</span></td>
+
             <td><span class="value">${result.visitorId ?? 'N/A'}</span></td>
           </tr>
           <tr>
-            <td><span class="label">Confidence:</span></td>
+
             <td><span class="value ${scoreClass(score ?? 0)}">${score ?? 'N/A'}</span></td>
           </tr>
           <tr>
-            <td><span class="label">Visitor Found:</span></td>
+
             <td><span class="value">${String(result.visitorFound ?? 'N/A')}</span></td>
           </tr>
           <tr>
-            <td><span class="label">Incognito:</span></td>
+
             <td><span class="value">${String(result.incognito ?? 'N/A')}</span></td>
           </tr>
           <tr>
-            <td><span class="label">Browser:</span></td>
+
             <td><span class="value">${result.browserName ?? 'N/A'} ${result.browserVersion ?? ''}</span></td>
           </tr>
           <tr>
-            <td><span class="label">OS:</span></td>
+
             <td><span class="value">${result.os ?? 'N/A'}</span></td>
           </tr>
           <tr>
-            <td><span class="label">Device:</span></td>
+
             <td><span class="value">${result.device ?? 'N/A'}</span></td>
           </tr>
           <tr>
-            <td><span class="label">IP:</span></td>
+
             <td><span class="value">${result.ip ?? 'N/A'}</span></td>
           </tr>
           <tr>
-            <td><span class="label">Time:</span></td>
+
             <td><span class="value">${new Date().toISOString()}</span></td>
           </tr>
          </table>
