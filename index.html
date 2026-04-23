@@ -59,16 +59,48 @@
       const score = result.confidence?.score;
 
       resultEl.innerHTML = `
-        <div><span class="label">Request ID:</span> <span class="value">${result.requestId ?? 'N/A'}</span></div>
-        <div><span class="label">Visitor ID:</span> <span class="value">${result.visitorId ?? 'N/A'}</span></div>
-        <div><span class="label">Confidence:</span> <span class="value ${scoreClass(score ?? 0)}">${score ?? 'N/A'}</span></div>
-        <div><span class="label">Visitor Found:</span> <span class="value">${String(result.visitorFound ?? 'N/A')}</span></div>
-        <div><span class="label">Incognito:</span> <span class="value">${String(result.incognito ?? 'N/A')}</span></div>
-        <div><span class="label">Browser:</span> <span class="value">${result.browserName ?? 'N/A'} ${result.browserVersion ?? ''}</span></div>
-        <div><span class="label">OS:</span> <span class="value">${result.os ?? 'N/A'}</span></div>
-        <div><span class="label">Device:</span> <span class="value">${result.device ?? 'N/A'}</span></div>
-        <div><span class="label">IP:</span> <span class="value">${result.ip ?? 'N/A'}</span></div>
-        <div><span class="label">Time:</span> <span class="value">${new Date().toISOString()}</span></div>
+        <table>
+          <tr>
+            <td><span class="label">Request ID:</span></td>
+            <td><span class="value">${result.requestId ?? 'N/A'}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">Visitor ID:</span></td>
+            <td><span class="value">${result.visitorId ?? 'N/A'}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">Confidence:</span></td>
+            <td><span class="value ${scoreClass(score ?? 0)}">${score ?? 'N/A'}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">Visitor Found:</span></td>
+            <td><span class="value">${String(result.visitorFound ?? 'N/A')}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">Incognito:</span></td>
+            <td><span class="value">${String(result.incognito ?? 'N/A')}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">Browser:</span></td>
+            <td><span class="value">${result.browserName ?? 'N/A'} ${result.browserVersion ?? ''}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">OS:</span></td>
+            <td><span class="value">${result.os ?? 'N/A'}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">Device:</span></td>
+            <td><span class="value">${result.device ?? 'N/A'}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">IP:</span></td>
+            <td><span class="value">${result.ip ?? 'N/A'}</span></td>
+          </tr>
+          <tr>
+            <td><span class="label">Time:</span></td>
+            <td><span class="value">${new Date().toISOString()}</span></td>
+          </tr>
+         </table>
       `;
     } catch (error) {
       console.error(error);
