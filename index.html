@@ -16,35 +16,27 @@
       font-size: 24px;
       margin-bottom: 12px;
     }
-    p {
-      margin-top: 0;
-    }
     .card {
       background: #1e293b;
       padding: 16px;
       border-radius: 10px;
       margin-top: 20px;
-      line-height: 1.7;
+      line-height: 1.8;
     }
-    .label {
-      color: #94a3b8;
-    }
-    .value {
-      font-weight: bold;
-      color: #38bdf8;
-    }
+    .label { color: #94a3b8; }
+    .value { font-weight: bold; color: #38bdf8; }
     .low { color: #f87171; }
     .medium { color: #facc15; }
     .high { color: #4ade80; }
     pre {
       white-space: pre-wrap;
       word-break: break-word;
+      margin: 0;
     }
   </style>
 </head>
 <body>
   <h1>Fingerprint Test</h1>
-  <p>Naudok šį puslapį skirtingose naršyklėse ir režimuose.</p>
 
   <div class="card" id="result">Loading...</div>
 
@@ -58,45 +50,32 @@
     }
 
     try {
-      const Fingerprint = await import('https://fpjscdn.net/v4/nJfJ9KmmgMTfln8ARpnL');
-
-      const fp = await Fingerprint.start({
-        apiKey: 'YOUR_PUBLIC_API_KEY'
-      });
+      const FingerprintJS = await import('https://fpjscdn.net/v3/nJfJ9KmmgMTfln8ARpnL');
+      const fp = await FingerprintJS.load();
 
       const result = await fp.get({ extendedResult: true });
-      const score = result.confidence?.score ?? null;
+      console.log('FULL RESULT:', result);
 
-      const data = {
-        visitorId: result.visitorId,
-        confidenceScore: score,
-        visitorFound: result.visitorFound,
-        incognito: result.incognito,
-        browserName: result.components?.browserName?.value ?? 'N/A',
-        browserVersion: result.components?.browserVersion?.value ?? 'N/A',
-        os: result.components?.os?.value ?? 'N/A',
-        device: result.components?.device?.value ?? 'N/A',
-        timestamp: new Date().toISOString()
-      };
+      const score = result.confidence?.score;
 
       resultEl.innerHTML = `
-        <div><span class="label">Visitor ID:</span> <span class="value">${data.visitorId}</span></div>
-        <div><span class="label">Confidence:</span> <span class="value ${scoreClass(score ?? 0)}">${data.confidenceScore ?? 'N/A'}</span></div>
-        <div><span class="label">Visitor Found:</span> <span class="value">${String(data.visitorFound)}</span></div>
-        <div><span class="label">Incognito:</span> <span class="value">${String(data.incognito)}</span></div>
-        <div><span class="label">Browser:</span> <span class="value">${data.browserName} ${data.browserVersion}</span></div>
-        <div><span class="label">OS:</span> <span class="value">${data.os}</span></div>
-        <div><span class="label">Device:</span> <span class="value">${data.device}</span></div>
-        <div><span class="label">Time:</span> <span class="value">${data.timestamp}</span></div>
+        <div><span class="label">Request ID:</span> <span class="value">${result.requestId ?? 'N/A'}</span></div>
+        <div><span class="label">Visitor ID:</span> <span class="value">${result.visitorId ?? 'N/A'}</span></div>
+        <div><span class="label">Confidence:</span> <span class="value ${scoreClass(score ?? 0)}">${score ?? 'N/A'}</span></div>
+        <div><span class="label">Visitor Found:</span> <span class="value">${String(result.visitorFound ?? 'N/A')}</span></div>
+        <div><span class="label">Incognito:</span> <span class="value">${String(result.incognito ?? 'N/A')}</span></div>
+        <div><span class="label">Browser:</span> <span class="value">${result.browserName ?? 'N/A'} ${result.browserVersion ?? ''}</span></div>
+        <div><span class="label">OS:</span> <span class="value">${result.os ?? 'N/A'}</span></div>
+        <div><span class="label">Device:</span> <span class="value">${result.device ?? 'N/A'}</span></div>
+        <div><span class="label">IP:</span> <span class="value">${result.ip ?? 'N/A'}</span></div>
+        <div><span class="label">Time:</span> <span class="value">${new Date().toISOString()}</span></div>
       `;
-
-      console.log('FULL RESULT:', result);
     } catch (error) {
+      console.error(error);
       resultEl.innerHTML = `
         <div style="color:#f87171;font-weight:bold;">Error loading fingerprint</div>
-        <pre>${error?.message || error}</pre>
+        <pre>${error?.message || String(error)}</pre>
       `;
-      console.error(error);
     }
   </script>
 </body>
