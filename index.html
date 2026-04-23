@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lt">
 <head>
   <meta charset="UTF-8" />
   <title>Fingerprint Test</title>
@@ -10,15 +10,21 @@
       background: #0f172a;
       color: #e2e8f0;
       padding: 20px;
+      margin: 0;
     }
     h1 {
       font-size: 24px;
+      margin-bottom: 12px;
+    }
+    p {
+      margin-top: 0;
     }
     .card {
       background: #1e293b;
       padding: 16px;
       border-radius: 10px;
       margin-top: 20px;
+      line-height: 1.7;
     }
     .label {
       color: #94a3b8;
@@ -27,34 +33,23 @@
       font-weight: bold;
       color: #38bdf8;
     }
-    .low {
-      color: #f87171;
-    }
-    .medium {
-      color: #facc15;
-    }
-    .high {
-      color: #4ade80;
+    .low { color: #f87171; }
+    .medium { color: #facc15; }
+    .high { color: #4ade80; }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
     }
   </style>
 </head>
 <body>
+  <h1>Fingerprint Test</h1>
+  <p>Naudok šį puslapį skirtingose naršyklėse ir režimuose.</p>
 
-<h1>Fingerprint Test</h1>
-<p>Naudok šį puslapį skirtingose naršyklėse ir režimuose.</p>
+  <div class="card" id="result">Loading...</div>
 
-<div class="card" id="result">Loading...</div>
-
-<script>
-(async () => {
-  try {
-    const fpPromise = import('https://fpjscdn.net/v3/YOUR_PUBLIC_API_KEY')
-      .then(FingerprintJS => FingerprintJS.load());
-
-    const fp = await fpPromise;
-    const result = await fp.get({ extendedResult: true });
-
-    const score = result.confidence.score;
+  <script type="module">
+    const resultEl = document.getElementById('result');
 
     function scoreClass(score) {
       if (score >= 0.9) return 'high';
@@ -62,42 +57,47 @@
       return 'low';
     }
 
-    const data = {
-      visitorId: result.visitorId,
-      confidenceScore: score,
-      visitorFound: result.visitorFound,
-      incognito: result.incognito,
-      browserName: result.components.browserName?.value,
-      browserVersion: result.components.browserVersion?.value,
-      os: result.components.os?.value,
-      device: result.components.device?.value,
-      timestamp: new Date().toISOString()
-    };
+    try {
+      const Fingerprint = await import('https://fpjscdn.net/v4/nJfJ9KmmgMTfln8ARpnL');
 
-    document.getElementById('result').innerHTML = `
-      <div><span class="label">Visitor ID:</span> <span class="value">${data.visitorId}</span></div>
-      <div><span class="label">Confidence:</span> 
-        <span class="value ${scoreClass(score)}">${data.confidenceScore}</span>
-      </div>
-      <div><span class="label">Visitor Found:</span> <span class="value">${data.visitorFound}</span></div>
-      <div><span class="label">Incognito:</span> <span class="value">${data.incognito}</span></div>
-      <div><span class="label">Browser:</span> <span class="value">${data.browserName} ${data.browserVersion}</span></div>
-      <div><span class="label">OS:</span> <span class="value">${data.os}</span></div>
-      <div><span class="label">Device:</span> <span class="value">${data.device}</span></div>
-      <div><span class="label">Time:</span> <span class="value">${data.timestamp}</span></div>
-    `;
+      const fp = await Fingerprint.start({
+        apiKey: 'YOUR_PUBLIC_API_KEY'
+      });
 
-    console.log('FULL RESULT:', result);
+      const result = await fp.get({ extendedResult: true });
+      const score = result.confidence?.score ?? null;
 
-  } catch (e) {
-    document.getElementById('result').innerHTML = `
-      <div style="color:red;">Error loading fingerprint</div>
-      <pre>${e}</pre>
-    `;
-    console.error(e);
-  }
-})();
-</script>
+      const data = {
+        visitorId: result.visitorId,
+        confidenceScore: score,
+        visitorFound: result.visitorFound,
+        incognito: result.incognito,
+        browserName: result.components?.browserName?.value ?? 'N/A',
+        browserVersion: result.components?.browserVersion?.value ?? 'N/A',
+        os: result.components?.os?.value ?? 'N/A',
+        device: result.components?.device?.value ?? 'N/A',
+        timestamp: new Date().toISOString()
+      };
 
+      resultEl.innerHTML = `
+        <div><span class="label">Visitor ID:</span> <span class="value">${data.visitorId}</span></div>
+        <div><span class="label">Confidence:</span> <span class="value ${scoreClass(score ?? 0)}">${data.confidenceScore ?? 'N/A'}</span></div>
+        <div><span class="label">Visitor Found:</span> <span class="value">${String(data.visitorFound)}</span></div>
+        <div><span class="label">Incognito:</span> <span class="value">${String(data.incognito)}</span></div>
+        <div><span class="label">Browser:</span> <span class="value">${data.browserName} ${data.browserVersion}</span></div>
+        <div><span class="label">OS:</span> <span class="value">${data.os}</span></div>
+        <div><span class="label">Device:</span> <span class="value">${data.device}</span></div>
+        <div><span class="label">Time:</span> <span class="value">${data.timestamp}</span></div>
+      `;
+
+      console.log('FULL RESULT:', result);
+    } catch (error) {
+      resultEl.innerHTML = `
+        <div style="color:#f87171;font-weight:bold;">Error loading fingerprint</div>
+        <pre>${error?.message || error}</pre>
+      `;
+      console.error(error);
+    }
+  </script>
 </body>
 </html>
